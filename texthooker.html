@@ -56,7 +56,7 @@ body {
 </head>
 <body>
 <div class="container">
-
+<input type="range" min="0" max="100" step="1" value="50" id="slider">
 <div id="remove_button" title="Remove last line">x</div>
 
 
@@ -74,6 +74,15 @@ $(document).ready(function(){
 //These are needed later.
 oldlines = 0;
 chars = 0;
+
+
+const slider = document.querySelector('#slider');
+const body = document.querySelector('body');
+
+
+slider.addEventListener('input', function() {
+  body.style.fontSize = this.value + 'px';
+});
 
 //This listens for a node (line) to be inserted.
 document.addEventListener("DOMNodeInserted", function () {

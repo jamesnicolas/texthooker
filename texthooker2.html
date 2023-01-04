@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>Texthooker</title>
+<style type="text/css">
+
+body {
+	background-color: #202020;
+	color: #BCBCBC;
+	font-weight: 400;
+	line-height:1.5;
+	margin-top:10%;
+	margin-left:10%;
+	margin-right:10%;
+	margin-bottom:20%;
+	font-family: "IPAGothic", "Sazanami Gothic", "Kochi Gothic", "VL Gothic", "Ume Gothic", "Pro W3", "Hiragino Kaku Gothic Pro", "Osaka Mono", "Osaka", "MS Gothic", "Meiryo", "M+ 1m";
+}
+
+.row {
+	font-size: 14px;
+}
+
+.container {
+	position:fixed;
+	top:3px;
+	right:5px;
+	display:inline-block;
+}
+
+#counter {
+	background-color:rgba(25,25,25,0.8);
+	color:#9d9d9d;
+	font-size:.4em;
+	line-height:100%;
+	float:left;
+	padding-left:8px;
+	padding-right:8px;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+#remove_button {
+	background-color:rgba(25,25,25,0.8);
+	color:#9d9d9d;
+	font-size:.4em;
+	line-height:100%;
+	float:right;
+	margin-right:10px;
+	padding-left:8px;
+	padding-right:8px;
+	padding-top:5px;
+	padding-bottom:5px;
+	cursor:pointer;
+	cursor:hand;
+}
+
+</style>
+
+</head>
+<body>
+<div class="container">
+<input type="range" min="0" max="100" step="1" value="14" id="slider">
+<div id="remove_button" title="Remove last line">x</div>
+
+
+<div id="counter" title="No. of characters / No. of lines">0 / 0</div>
+
+</div>
+
+<script>
+
+//The text inserter/scroller and the counter begin here.
+
+//These are needed later.
+oldlines = 0;
+chars = 0;
+
+var fontSize = 14;
+
+
+const slider = document.querySelector('#slider');
+
+slider.addEventListener('input', function() {
+    const rows = document.querySelectorAll('.row');
+  for (let row of rows) {
+    fontSize = this.value
+    row.style.fontSize = fontSize + 'px';
+    row.style.lineHeight = 1.5;
+  }
+});
+
+//This listens for a node (line) to be inserted.
+document.addEventListener("DOMNodeInserted", function () {
+
+  //Counter begins here. Get the current number of lines first.
+  var lines = document.getElementsByTagName('p').length;
+  
+  //Second, confirm whether the node insertion was a new line.
+  //(Rikai also inserts and removes a node (a div).)
+  var isnew = lines - oldlines;
+        if ( isnew > 0){
+
+//If it is a new line, do a character count of the line and add it to the running tally.
+	  var i=lines-1
+	  var newlineel = document.getElementsByTagName('p')[i]
+	  newlineel.contentEditable = true;
+      newlineel.classList.add('row');
+      newlineel.style.fontSize = fontSize + 'px';
+	  if (!newlineel.innerHTML.startsWith('.')) {
+		newlineel.innerHTML = '.' + newlineel.innerHTML
+	  }
+  	  var newline = newlineel.innerHTML;
+  	  var linechars = newline.length;
+  	  newchars = chars + linechars;
+  	  
+	  //Make the numbers look nice.
+	  var charsdisp = newchars.toLocaleString();
+	  var linesdisp = lines.toLocaleString();
+	  
+	  //Update the counter
+	  document.getElementById('counter').innerHTML = charsdisp + ' / ' + linesdisp;
+	  
+	  //Save the new totals for the next node insertion.
+	  oldlines = lines;
+	  chars = newchars;
+	  
+	  //If the line is too long, put a line break in it.
+	  if (linechars > 75){
+		  newlineel.innerHTML = newline.slice(0,75) + '<br>' + newline.slice(75);
+	  }
+	  
+  }
+  
+});
+
+
+//This is the remove button
+document.getElementById('remove_button').addEventListener('click', function() {
+  //Get the current number of lines first.
+  var lines = document.getElementsByTagName('p').length;
+  var lastlineel = document.getElementsByTagName('p')[lines-1]
+  var lastline = lastlineel.innerHTML;
+  var linechars = lastline.length;
+  var newchars = chars - linechars;
+  
+  //Make the numbers look nice.
+  var charsdisp = newchars.toLocaleString();
+  var linesdisp = (lines-1).toLocaleString();
+  
+  //Update the counter
+  document.getElementById('counter').innerHTML = charsdisp + ' / ' + linesdisp;
+  
+  //Remove the node.
+  lastlineel.parentNode.removeChild(lastlineel);
+  
+  //Save the new totals for the next node insertion.
+  oldlines = lines;
+  chars = newchars;
+});
+
+</script>
+
+</body>
+</html>
