@@ -11,7 +11,7 @@ body {
 	margin-top:10%;
 	margin-left:10%;
 	margin-right:10%;
-	margin-bottom:20%;
+    margin-bottom:5%;
 	font-family: "IPAGothic", "Sazanami Gothic", "Kochi Gothic", "VL Gothic", "Ume Gothic", "Pro W3", "Hiragino Kaku Gothic Pro", "Osaka Mono", "Osaka", "MS Gothic", "Meiryo", "M+ 1m";
 }
 
@@ -58,7 +58,7 @@ body {
 </head>
 <body>
 <div class="container">
-<input type="range" min="0" max="100" step="1" value="14" id="slider">
+<input type="range" min="0" max="100" step="1" value="28" id="slider">
 <div id="remove_button" title="Remove last line">x</div>
 
 
@@ -129,6 +129,7 @@ document.addEventListener("DOMNodeInserted", function () {
 	  }
 	  
   }
+window.scrollTo(0, document.body.scrollHeight);
   
 });
 
